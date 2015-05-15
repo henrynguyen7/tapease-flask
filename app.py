@@ -1,7 +1,5 @@
 import json
-from flask import Flask
-from flask import request
-from flask import jsonify
+from flask import Flask, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from model import Annotation
