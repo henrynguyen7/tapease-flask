@@ -28,5 +28,10 @@ def annotation():
             .all()
         return jsonify(annotations=[a.serialize for a in results])
 
+@app.route("/createdb", methods=['GET'])
+def createdb():
+    from model import db
+    return db.create_all()
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
