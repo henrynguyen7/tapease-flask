@@ -31,7 +31,8 @@ def annotation():
 @app.route("/createdb", methods=['GET'])
 def createdb():
     from model import db
-    return db.create_all()
+    db.create_all()
+    return "Okiely dokes"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
