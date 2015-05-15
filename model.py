@@ -19,7 +19,7 @@ class Annotation(db.Model):
     comment = db.Column(db.Text)
     date = db.Column(db.DateTime)
 
-    def __init__(self, pageid, elementid, username, comment, imageurl=None, date=None):
+    def __init__(self, pageid, elementid, username, comment, imageurl="", date=None):
         self.uid = pageid + "." + elementid
         self.pageid = pageid
         self.elementid = elementid
