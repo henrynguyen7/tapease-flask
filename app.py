@@ -14,6 +14,7 @@ def annotation():
             pageid=request.get_json().get('pageid'),
             elementid=request.get_json().get('elementid'),
             username=request.get_json().get('username'),
+            imageurl=request.get_json().get('imageurl'),
             comment=request.get_json().get('comment'),
             date=request.get_json().get('date', None),
         )
