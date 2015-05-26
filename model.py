@@ -1,26 +1,35 @@
 from datetime import datetime
 from flask import Flask
+from flask.ext.login import LoginManager
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.security import Security, SQLAlchemyUserDatastore, \
+    UserMixin, RoleMixin, login_required
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tap.db'
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'tapeasebaby'
+
 db = SQLAlchemy(app)
 
-secret_key = 'tapeasebaby'
+login_manager = LoginManager()
 
+@login_manager.user_loader
+def load_user(userid):
+    return User.get(userid)
 
 class User(db.Model):
 
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80))
-    password = db.Column(db.String(80))
+    email = db.Column(db.String(80), unique=True)
+    password = db.Column(db.String(255))
     name = db.Column(db.String(80))
     image_url = db.Column(db.String(80))
     is_enabled = db.Column(db.Boolean)
     create_date = db.Column(db.DateTime)
-    access_token = db.Column(EncryptedType(db.String, secret_key))
+    access_token = db.Column(db.String(80))
 
     def __init__(self, email, password, name, image_url="", is_enabled=True, create_date=None):
         self.email = email
@@ -50,7 +59,6 @@ class Tap(db.Model):
     __tablename__ = 'tap'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(Integer, ForeignKey('user.id'))
     page_token = db.Column(db.String(80))
     base_url = db.Column(db.String(80))
     route_params = db.Column(db.String(80))
@@ -60,14 +68,12 @@ class Tap(db.Model):
     comment = db.Column(db.Text)
     create_date = db.Column(db.DateTime)
 
-    def __init__(self, user_id, element_route, comment, page_token=None, base_url=None, route_params=None, query_params=None, create_date=None):
-        self.user_id = user_id
+    def __init__(self, base_url, route_params, query_params, element_route, node, comment, page_token=None, create_date=None):
         if page_token is not None:
             self.page_token = page_token
-        elif base_url is not None:
-            self.base_url = base_url
-            self.route_params = route_params
-            self.query_params = query_params
+        self.base_url = base_url
+        self.route_params = route_params
+        self.query_params = query_params
         self.element_route = element_route
         self.node = node
         self.comment = comment
@@ -79,7 +85,6 @@ class Tap(db.Model):
     def serialize(self):
        return {
            'id': self.id,
-           'user_id': self.user_id,
            'page_token': self.page_token,
            'base_url': self.base_url,
            'route_params': self.route_params,

@@ -2,13 +2,12 @@ import json
 from flask import Flask, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 
-from model import Annotation
-from model import db
+from model import db, Tap, User
 
 app = Flask(__name__)
 
 
-@app.route("/user", methods=['POST'])
+@app.route("/user", methods=['GET', 'POST'])
 def user():
     if request.method == 'POST':
         user = User(
@@ -20,6 +19,8 @@ def user():
         db.session.add(user)
         db.session.commit()
         return jsonify(user.serialize)
+    else:
+        return ""
 
 @app.route("/auth", methods=['POST'])
 def auth():
@@ -30,7 +31,6 @@ def auth():
 def tap():
     if request.method == 'POST':
         tap = Tap(
-            user_id=request.get_json().get('user_id'),
             page_token=request.get_json().get('page_token'),
             base_url=request.get_json().get('base_url'),
             route_params=request.get_json().get('route_params'),
@@ -44,6 +44,7 @@ def tap():
         db.session.commit()
         return jsonify(tap.serialize)
     else:
+        results = None
         if request.args.get('page_token'):
             results = Tap.query \
                 .filter_by(page_token=request.args.get('page_token', '')) \
@@ -54,7 +55,7 @@ def tap():
                 .filter_by(base_url=request.args.get('base_url', '')) \
                 .order_by(Tap.create_date) \
                 .all()
-        return jsonify(taps=[t.serialize for t in results])
+        return jsonify(taps=[t.serialize for t in results]) if results else ""
 
 @app.route("/createdb", methods=['GET'])
 def createdb():
@@ -63,4 +64,4 @@ def createdb():
     return "Okiely dokes"
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
