@@ -7,23 +7,23 @@ from model import db
 
 app = Flask(__name__)
 
-@app.route("/annotation", methods=['GET', 'POST'])
-def annotation():
+@app.route("/tap", methods=['GET', 'POST'])
+def tap():
     if request.method == 'POST':
-        annotation = Annotation(
-            pageid=request.get_json().get('pageid'),
-            elementid=request.get_json().get('elementid'),
+        tap = Tap(
+            base_url=request.get_json().get('base_url'),
+            element_route=request.get_json().get('element_route'),
             username=request.get_json().get('username'),
-            imageurl=request.get_json().get('imageurl'),
+            image_url=request.get_json().get('image_url'),
             comment=request.get_json().get('comment'),
             date=request.get_json().get('date', None),
         )
-        db.session.add(annotation)
+        db.session.add(tap)
         db.session.commit()
-        return jsonify(annotation.serialize)
+        return jsonify(tap.serialize)
     else:
-        results = Annotation.query \
-            .filter_by(pageid=request.args.get('pageid', '')) \
+        results = Tap.query \
+            .filter_by(base_url=request.args.get('base_url', '')) \
             .order_by(Annotation.date) \
             .all()
         return jsonify(annotations=[a.serialize for a in results])

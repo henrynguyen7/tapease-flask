@@ -3,29 +3,27 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/annotation.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tap.db'
 db = SQLAlchemy(app)
 
-class Annotation(db.Model):
+class Tap(db.Model):
 
-    __tablename__ = 'annotation'
+    __tablename__ = 'tap'
 
     id = db.Column(db.Integer, primary_key=True)
-    uid = db.Column(db.String(80))
-    pageid = db.Column(db.String(80))
-    elementid = db.Column(db.String(80))
+    base_url = db.Column(db.String(80))
+    element_route = db.Column(db.String(80))
     username = db.Column(db.String(80))
-    imageurl = db.Column(db.String(80))
+    image_url = db.Column(db.String(80))
     comment = db.Column(db.Text)
     date = db.Column(db.DateTime)
 
-    def __init__(self, pageid, elementid, username, comment, imageurl="", date=None):
-        self.uid = pageid + "." + elementid
-        self.pageid = pageid
-        self.elementid = elementid
+    def __init__(self, base_url, element_route, username, comment, image_url="", date=None):
+        self.base_url = base_url
+        self.element_route = element_route
         self.username = username
         self.comment = comment
-        self.imageurl = imageurl
+        self.image_url = image_url
         if date is None:
             date = datetime.utcnow()
         self.date = date
@@ -35,10 +33,10 @@ class Annotation(db.Model):
        return {
            'id': self.id,
            'uid': self.uid,
-           'pageid': self.pageid,
-           'elementid': self.elementid,
+           'base_url': self.base_url,
+           'element_route': self.element_route,
            'username': self.username,
-           'imageurl': self.imageurl,
+           'image_url': self.image_url,
            'comment': self.comment,
            'date': self.date.isoformat(),
        }
