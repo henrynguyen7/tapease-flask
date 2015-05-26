@@ -12,6 +12,7 @@ def tap():
     if request.method == 'POST':
         tap = Tap(
             base_url=request.get_json().get('base_url'),
+            params=request.get_json().get('params'),
             element_route=request.get_json().get('element_route'),
             username=request.get_json().get('username'),
             image_url=request.get_json().get('image_url'),
@@ -24,9 +25,9 @@ def tap():
     else:
         results = Tap.query \
             .filter_by(base_url=request.args.get('base_url', '')) \
-            .order_by(Annotation.date) \
+            .order_by(Tap.date) \
             .all()
-        return jsonify(annotations=[a.serialize for a in results])
+        return jsonify(taps=[t.serialize for t in results])
 
 @app.route("/createdb", methods=['GET'])
 def createdb():

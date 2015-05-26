@@ -12,14 +12,16 @@ class Tap(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     base_url = db.Column(db.String(80))
+    params = db.Column(db.String(80))
     element_route = db.Column(db.String(80))
     username = db.Column(db.String(80))
     image_url = db.Column(db.String(80))
     comment = db.Column(db.Text)
     date = db.Column(db.DateTime)
 
-    def __init__(self, base_url, element_route, username, comment, image_url="", date=None):
+    def __init__(self, base_url, base_url, element_route, username, comment, image_url="", date=None):
         self.base_url = base_url
+        self.params = params
         self.element_route = element_route
         self.username = username
         self.comment = comment
@@ -32,8 +34,8 @@ class Tap(db.Model):
     def serialize(self):
        return {
            'id': self.id,
-           'uid': self.uid,
            'base_url': self.base_url,
+           'params': self.params,
            'element_route': self.element_route,
            'username': self.username,
            'image_url': self.image_url,
