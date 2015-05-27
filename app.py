@@ -11,6 +11,20 @@ app = Flask(__name__)
 auth = HTTPBasicAuth()
 
 
+@app.route("/createdb", methods=['GET'])
+def create_db():
+    from model import db
+    db.create_all()
+    return "Okiely dokes"
+
+
+@app.route("/login", methods=['GET'])
+@auth.login_required
+def login():
+    token = g.user.generate_auth_token()
+    return jsonify({'token': token.decode('ascii')})
+
+
 @app.route('/user', methods = ['POST'])
 def create_user():
     email = request.json.get('email')
@@ -53,13 +67,6 @@ def update_user():
         user.is_enabled = request.json.get('is_enabled')
     db.session.commit()
     return jsonify(user.serialize)
-
-
-@app.route("/login", methods=['GET'])
-@auth.login_required
-def login():
-    token = g.user.generate_auth_token()
-    return jsonify({'token': token.decode('ascii')})
 
 
 @app.route("/tap", methods=['POST'])
@@ -106,13 +113,6 @@ def verify_password(email_or_token, password):
             return False
     g.user = user
     return True
-
-
-@app.route("/createdb", methods=['GET'])
-def create_db():
-    from model import db
-    db.create_all()
-    return "Okiely dokes"
 
 
 if __name__ == "__main__":
