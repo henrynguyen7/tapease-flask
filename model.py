@@ -21,6 +21,7 @@ class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
+    taps = db.relationship('Tap', backref='user', lazy='dynamic')
     email = db.Column(db.String(32), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     name = db.Column(db.String(80))
@@ -77,6 +78,7 @@ class Tap(db.Model):
     __tablename__ = 'tap'
 
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     page_token = db.Column(db.String(80))
     page_uid = db.Column(db.String(80))
     element_route = db.Column(db.String(80))
@@ -84,7 +86,8 @@ class Tap(db.Model):
     comment = db.Column(db.Text)
     create_date = db.Column(db.DateTime)
 
-    def __init__(self, page_uid, element_route, node, comment, page_token=None):
+    def __init__(self, user_id, page_uid, element_route, node, comment, page_token=None):
+        self.user_id = user_id
         if page_token is not None:
             self.page_token = page_token
         self.page_uid = page_uid
@@ -95,8 +98,11 @@ class Tap(db.Model):
 
     @property
     def serialize(self):
-       return {
+        user = User.query.get(self.user_id)
+        return {
            'id': self.id,
+           'user': user.serialize,
+           'user_id': self.user_id,
            'page_token': self.page_token,
            'page_uid': self.page_uid,
            'element_route': self.element_route,

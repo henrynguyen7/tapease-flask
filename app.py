@@ -66,6 +66,7 @@ def login():
 @auth.login_required
 def create_tap():
     tap = Tap(
+        user_id=request.get_json().get('user_id'),
         page_token=request.get_json().get('page_token'),
         page_uid=request.get_json().get('page_uid'),
         element_route=request.get_json().get('element_route'),
