@@ -108,7 +108,12 @@ def verify_password(email_or_token, password):
     return True
 
 
+@app.route("/createdb", methods=['GET'])
+def create_db():
+    from model import db
+    db.create_all()
+    return "Okiely dokes"
+
+
 if __name__ == "__main__":
-    if not os.path.exists('tapeasedb.sqlite'):
-        db.create_all()
     app.run(host='0.0.0.0', debug=True)
