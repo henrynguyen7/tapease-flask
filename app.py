@@ -37,7 +37,7 @@ def create_user():
 @app.route('/user', methods = ['GET'])
 @auth.login_required
 def get_user():
-    return jsonify(User.query.filter_by(id=g.user.id).first().serialize)
+    return jsonify(User.query.get(g.user.id).serialize)
 
 
 @app.route('/user', methods = ['PUT'])
