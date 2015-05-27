@@ -55,7 +55,7 @@ def update_user():
     return jsonify(user.serialize)
 
 
-@app.route("/login", methods=['POST'])
+@app.route("/login", methods=['GET'])
 @auth.login_required
 def login():
     token = g.user.generate_auth_token()
