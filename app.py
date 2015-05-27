@@ -43,8 +43,16 @@ def get_user():
 @app.route('/user', methods = ['PUT'])
 @auth.login_required
 def update_user():
-    # TODO: Check if auth'd, then allow update
-    pass
+    user = User.query.filter_by(id=g.user.id).first()
+    print request.json
+    if request.json.get('name') is not None:
+        user.name = request.json.get('name')
+    if request.json.get('image_url') is not None:
+        user.image_url = request.json.get('image_url')
+    if request.json.get('is_enabled') is not None:
+        user.is_enabled = request.json.get('is_enabled')
+    db.session.commit()
+    return jsonify(user.serialize)
 
 
 @app.route("/login", methods=['POST'])
