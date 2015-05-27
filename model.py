@@ -27,6 +27,7 @@ class User(db.Model):
     image_url = db.Column(db.String(80))
     is_enabled = db.Column(db.Boolean)
     create_date = db.Column(db.DateTime)
+    access_token = db.Column(db.String(80))
 
     def __init__(self, email, password, name="", image_url="", is_enabled=True):
         self.email = email
@@ -55,7 +56,8 @@ class User(db.Model):
 
     def generate_auth_token(self, expiration=600):
         s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.id})
+        self.access_token = s.dumps({'id': self.id})
+        return self.access_token
 
     @staticmethod
     def verify_auth_token(token):

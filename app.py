@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json, os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -32,6 +32,12 @@ def create_user():
     db.session.add(user)
     db.session.commit()
     return jsonify(user.serialize)
+
+
+@app.route('/user', methods = ['GET'])
+@auth.login_required
+def get_user():
+    return jsonify(User.query.filter_by(id=g.user.id).first().serialize)
 
 
 @app.route('/user', methods = ['PUT'])
