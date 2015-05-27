@@ -29,6 +29,7 @@ def login():
 def create_user():
     email = request.json.get('email')
     password = request.json.get('password')
+    org_name = request.json.get('org_name')
     name = request.json.get('name')
     image_url = request.json.get('image_url')
     is_enabled = request.json.get('is_enabled')
@@ -36,12 +37,17 @@ def create_user():
         abort(400) # missing arguments
     if User.query.filter_by(email=email).first() is not None:
         abort(400) # existing user
+    if org_name is not None:
+        org = Org.query.filter_by(name=org_name).first()
+        if org is not None:
+            org_id = org.id
     user = User(
         email=email,
         password=password,
+        org_id=org_id if org_id is not None else None,
         name=name,
         image_url=image_url,
-        is_enabled=is_enabled
+        is_enabled=is_enabled,
     )
     db.session.add(user)
     db.session.commit()
