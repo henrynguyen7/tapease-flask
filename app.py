@@ -51,13 +51,13 @@ def create_user():
     )
     db.session.add(user)
     db.session.commit()
-    return jsonify(user.serialize)
+    return jsonify(user.to_json())
 
 
 @app.route('/user', methods = ['GET'])
 @auth.login_required
 def get_user():
-    return jsonify(User.query.get(g.user.id).serialize)
+    return jsonify(User.query.get(g.user.id).to_json())
 
 
 @app.route('/user', methods = ['PUT'])
@@ -72,7 +72,7 @@ def update_user():
     if request.json.get('is_enabled') is not None:
         user.is_enabled = request.json.get('is_enabled')
     db.session.commit()
-    return jsonify(user.serialize)
+    return jsonify(user.to_json())
 
 
 @app.route("/tap", methods=['POST'])
@@ -88,7 +88,7 @@ def create_tap():
     )
     db.session.add(tap)
     db.session.commit()
-    return jsonify(tap.serialize)
+    return jsonify(tap.to_json())
 
 
 @app.route("/tap", methods=['GET'])
@@ -105,7 +105,7 @@ def get_tap():
             .filter_by(page_uid=request.args.get('page_uid', '')) \
             .order_by(Tap.create_date) \
             .all()
-    return jsonify(taps=[t.serialize for t in results]) if results else ""
+    return jsonify(taps=[t.to_json() for t in results]) if results else ""
 
 
 @auth.verify_password

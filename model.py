@@ -29,8 +29,7 @@ class Org(db.Model):
         self.name = name
         self.create_date = datetime.utcnow()
 
-    @property
-    def serialize(self):
+    def to_json(self):
         return {
             'id': self.id,
             'name': self.name,
@@ -62,8 +61,7 @@ class User(db.Model):
         self.is_enabled = is_enabled
         self.create_date = datetime.utcnow()
 
-    @property
-    def serialize(self):
+    def to_json(self):
         org = Org.query.get(org_id)
         return {
             'id': self.id,
@@ -121,8 +119,7 @@ class Tap(db.Model):
         self.comment = comment
         self.create_date = datetime.utcnow()
 
-    @property
-    def serialize(self):
+    def to_json(self):
         user = User.query.get(self.user_id)
         org = Org.query.get(user.org_id)
         return {
