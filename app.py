@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json, os
-from flask import Flask, request, jsonify, g
+from flask import Flask, request, jsonify, g, abort
 from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -33,6 +33,7 @@ def create_user():
     name = request.json.get('name')
     image_url = request.json.get('image_url')
     is_enabled = request.json.get('is_enabled')
+    org_id = None
     if email is None or password is None:
         abort(400) # missing arguments
     if User.query.filter_by(email=email).first() is not None:

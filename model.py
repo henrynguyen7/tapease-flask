@@ -62,7 +62,7 @@ class User(db.Model):
         self.create_date = datetime.utcnow()
 
     def to_json(self):
-        org = Org.query.get(org_id)
+        org = Org.query.get(self.org_id)
         return {
             'id': self.id,
             'org': org,
