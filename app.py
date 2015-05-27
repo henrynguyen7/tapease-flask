@@ -41,9 +41,9 @@ def update_user():
     pass
 
 
-@app.route("/auth", methods=['POST'])
+@app.route("/login", methods=['POST'])
 @auth.login_required
-def auth():
+def login():
     token = g.user.generate_auth_token()
     return jsonify({'token': token.decode('ascii')})
 
