@@ -32,9 +32,7 @@ def tap():
     if request.method == 'POST':
         tap = Tap(
             page_token=request.get_json().get('page_token'),
-            base_url=request.get_json().get('base_url'),
-            route_params=request.get_json().get('route_params'),
-            query_params=request.get_json().get('query_params'),
+            page_uid=request.get_json().get('page_uid'),
             element_route=request.get_json().get('element_route'),
             node=request.get_json().get('node'),
             comment=request.get_json().get('comment'),
@@ -50,9 +48,9 @@ def tap():
                 .filter_by(page_token=request.args.get('page_token', '')) \
                 .order_by(Tap.create_date) \
                 .all()
-        elif request.args.get('base_url'):
+        elif request.args.get('page_uid'):
             results = Tap.query \
-                .filter_by(base_url=request.args.get('base_url', '')) \
+                .filter_by(page_uid=request.args.get('page_uid', '')) \
                 .order_by(Tap.create_date) \
                 .all()
         return jsonify(taps=[t.serialize for t in results]) if results else ""

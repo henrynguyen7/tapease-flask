@@ -60,20 +60,16 @@ class Tap(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     page_token = db.Column(db.String(80))
-    base_url = db.Column(db.String(80))
-    route_params = db.Column(db.String(80))
-    query_params = db.Column(db.String(80))
+    page_uid = db.Column(db.String(80))
     element_route = db.Column(db.String(80))
     node = db.Column(db.String(300))
     comment = db.Column(db.Text)
     create_date = db.Column(db.DateTime)
 
-    def __init__(self, base_url, route_params, query_params, element_route, node, comment, page_token=None, create_date=None):
+    def __init__(self, page_uid, element_route, node, comment, page_token=None, create_date=None):
         if page_token is not None:
             self.page_token = page_token
-        self.base_url = base_url
-        self.route_params = route_params
-        self.query_params = query_params
+        self.page_uid = page_uid
         self.element_route = element_route
         self.node = node
         self.comment = comment
@@ -86,9 +82,7 @@ class Tap(db.Model):
        return {
            'id': self.id,
            'page_token': self.page_token,
-           'base_url': self.base_url,
-           'route_params': self.route_params,
-           'query_params': self.query_params,
+           'page_uid': self.page_uid,
            'element_route': self.element_route,
            'node': self.node,
            'comment': self.comment,
