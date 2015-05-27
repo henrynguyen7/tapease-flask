@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from datetime import datetime
 
 from flask import Flask
@@ -7,7 +9,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tapease.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tapeasedb.sqlite'
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'tapeasebaby'
 

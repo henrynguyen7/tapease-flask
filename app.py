@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import json
 from flask import Flask, request, jsonify
 from flask.ext.httpauth import HTTPBasicAuth
@@ -78,13 +80,6 @@ def get_tap():
     return jsonify(taps=[t.serialize for t in results]) if results else ""
 
 
-@app.route("/createdb", methods=['GET'])
-def create_db():
-    from model import db
-    db.create_all()
-    return "Okiely dokes"
-
-
 @auth.verify_password
 def verify_password(email_or_token, password):
     # first try to authenticate by token
@@ -99,4 +94,6 @@ def verify_password(email_or_token, password):
 
 
 if __name__ == "__main__":
+    if not os.path.exists('tapeasedb.sqlite'):
+        db.create_all()
     app.run(host='0.0.0.0', debug=True)
