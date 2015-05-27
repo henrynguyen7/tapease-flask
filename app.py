@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import json
+import json, os
 from flask import Flask, request, jsonify
 from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.sqlalchemy import SQLAlchemy
